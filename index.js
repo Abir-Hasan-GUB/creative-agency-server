@@ -24,6 +24,7 @@ client.connect(err => {
     const collection = client.db("creative-agency").collection("agency's-information");
     const adminCollection = client.db("creative-agency").collection("admin");
     const courseCollection = client.db("creative-agency").collection("course");
+    const commentsCollection = client.db("creative-agency").collection("comments");
 
     //Add Admin Mail
     app.post('/addAdmin', (req, res) => {
@@ -76,9 +77,32 @@ client.connect(err => {
     app.get('/showCourse', (req, res)=>{
         courseCollection.find({})
         .toArray((err, documents)=>{
+           
             res.send(documents);
         })
     })
+
+     //Add Comments from user to DB
+     app.post('/addComments', (req, res) => {
+        const addComments = req.body;
+        console.log(addComments);
+        
+            commentsCollection.insertOne(addComments)
+                .then(result => {
+                    console.log("One comment added");
+                    res.send(result.insertedCount > 0)
+                })
+        
+    })
+
+     // Display all comments to home page
+     app.get('/showComents', (req, res)=>{
+        commentsCollection.find({})
+        .toArray((err, documents)=>{
+            res.send(documents);
+        })
+    })
+
 
     //Welcome Message
     app.get('/', (req, res) => {
