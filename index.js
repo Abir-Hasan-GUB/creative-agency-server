@@ -4,8 +4,7 @@ const password = 'Volunteer-Network';
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const ObjectId = require('mongodb').ObjectId;
-require('dotenv').config()
-console.log(process.env.DB_USER)
+require('dotenv').config();
 const port = 5000;
 
 const app = express();
@@ -18,8 +17,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.19f5u.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-  const collection = client.db("db name").collection("collection name");
+    const collection = client.db("creative-agency").collection("agency's-information");
 
+    app.post('/addAdmin', (req, res) => {
+        const addAdminMail = req.body;
+        console.log(addAdminMail);
+        collection.insertOne(addAdminMail)
+          .then(result => {
+            res.send(result.insertedCount > 0)
+          })
+      })
+
+    app.get('/', (req, res) => {
+        res.send("Abir Don't Worry We Working From MongoDB for You !!!");
+    })
 
 })
 
