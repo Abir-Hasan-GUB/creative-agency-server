@@ -19,13 +19,15 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const collection = client.db("creative-agency").collection("agency's-information");
 
+    //Add Admin Mail
     app.post('/addAdmin', (req, res) => {
         const addAdminMail = req.body;
-        console.log(addAdminMail);
-        collection.insertOne(addAdminMail)
-          .then(result => {
-            res.send(result.insertedCount > 0)
-          })
+        if(addAdminMail.email != ''){
+            collection.insertOne(addAdminMail)
+            .then(result => {
+              res.send(result.insertedCount > 0)
+            })
+        }
       })
 
     app.get('/', (req, res) => {
