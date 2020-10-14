@@ -69,7 +69,15 @@ client.connect(err => {
 
             // return res.send({name: file.name, path: `/${file.name}`})
         })
-        console.log(name,file)
+        console.log(name,designation,file)
+    })
+
+    // Display all course/sarvices to home page
+    app.get('/showCourse', (req, res)=>{
+        courseCollection.find({})
+        .toArray((err, documents)=>{
+            res.send(documents);
+        })
     })
 
     //Welcome Message
