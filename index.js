@@ -1,6 +1,5 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
-const password = 'Volunteer-Network';
 const bodyParser = require('body-parser');
 const fs = require('fs-extra');
 const fileUpload = require('express-fileupload')
@@ -43,31 +42,31 @@ client.connect(err => {
         const file = req.files.file;
         const name = req.body.name;
         const designation = req.body.designation;
-        const filePath = `${__dirname}/admin/${file.name}`;
-        file.mv(filePath, err => {
-            if (err) {
-                console.log(err);
-                res.status(500).send({ msg: 'Faild to Upload IMG' });
-            }
-            const newImg = fs.readFileSync(filePath);
+        // const filePath = `${__dirname}/admin/${file.name}`;
+        // file.mv(filePath, err => {
+            // if (err) {
+            //     console.log(err);
+            //     res.status(500).send({ msg: 'Faild to Upload IMG' });
+            // }
+            const newImg = file.data;
             const encImg = newImg.toString('base64');
 
             var image = {
-                contentType: req.files.file.mimetype,
-                size: req.files.file.size,
-                img: Buffer(encImg, 'base64')
+                contentType: file.mimetype,
+                size: file.size,
+                img: Buffer.from(encImg, 'base64')
             };
-            courseCollection.insertOne({ name, designation, image })
+            courseCollection.insertOne({ name, designation })
                 .then(result => {
-                    fs.remove(filePath, error => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        }
+                    // fs.remove(filePath, error => {
+                        // if (error) {
+                        //     console.log(error);
+                        //     res.status(500).send({ msg: 'Faild to Upload IMG' });
+                        // }
                         res.send(result.insertedCount > 0)
-                    })
+                    // })
                 })
-        })
+        // })
         console.log(name, designation, file)
     })
 
@@ -111,31 +110,31 @@ client.connect(err => {
         const ProductDetails = req.body.ProductDetails;
         const price = req.body.price;
 
-        const filePath = `${__dirname}/admin/${file.name}`;
-        file.mv(filePath, err => {
-            if (err) {
-                console.log(err);
-                res.status(500).send({ msg: 'Faild to Upload IMG' });
-            }
-            const newImg = fs.readFileSync(filePath);
+        // const filePath = `${__dirname}/admin/${file.name}`;
+        // file.mv(filePath, err => {
+            // if (err) {
+            //     console.log(err);
+            //     res.status(500).send({ msg: 'Faild to Upload IMG' });
+            // }
+            const newImg = file.data;
             const encImg = newImg.toString('base64');
 
             var image = {
-                contentType: req.files.file.mimetype,
-                size: req.files.file.size,
-                img: Buffer(encImg, 'base64')
+                contentType: file.mimetype,
+                size: file.size,
+                img: Buffer.from(encImg, 'base64')
             };
-            ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
+            ordersCollection.insertOne({ name, email, productName, ProductDetails, price })
                 .then(result => {
-                    fs.remove(filePath, error => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        }
+                    // fs.remove(filePath, error => {
+                        // if (error) {
+                        //     console.log(error);
+                        //     res.status(500).send({ msg: 'Faild to Upload IMG' });
+                        // }
                         res.send(result.insertedCount > 0)
-                    })
+                    // })
                 })
-        })
+        // })
     })
 
     // Display order per user to order page
@@ -158,11 +157,10 @@ client.connect(err => {
     app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
         console.log(email)
-        const len = email.length;
-        adminCollection.find({ email: email })
-            .toArray((err, admin) => {
-                res.send(admin.length > 0);
-            })
+        adminCollection.find({ email: email})
+        .toArray((err, admin) => {
+            res.send(admin.length > 0);
+        })
     })
 
     //Welcome Message
