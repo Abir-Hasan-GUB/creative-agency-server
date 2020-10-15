@@ -139,8 +139,16 @@ client.connect(err => {
         })
     })
 
-    // Display all order to order page
-    app.get('/showOrder', (req, res) => {
+    // Display order per user to order page
+    app.get('/registerUser', (req, res) => {
+        ordersCollection.find({ email: req.query.email })
+          .toArray((err, documents) => {
+            res.send(documents)
+          })
+      })
+
+    // Display all sarvice to admin panel
+    app.get('/showAllService', (req, res) => {
         ordersCollection.find({})
             .toArray((err, documents) => {
                 res.send(documents);
