@@ -21,7 +21,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.19f5u.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-    const collection = client.db("creative-agency").collection("agency's-information");
     const adminCollection = client.db("creative-agency").collection("admin");
     const courseCollection = client.db("creative-agency").collection("course");
     const commentsCollection = client.db("creative-agency").collection("comments");
@@ -44,32 +43,19 @@ client.connect(err => {
         const file = req.files.file;
         const name = req.body.name;
         const designation = req.body.designation;
-        const filePath = `${__dirname}/admin/${file.name}`;
-        file.mv(filePath, err => {
-            if (err) {
-                console.log(err);
-                res.status(500).send({ msg: 'Faild to Upload IMG' });
-            }
-            const newImg = fs.readFileSync(filePath);
-            const encImg = newImg.toString('base64');
 
-            var image = {
-                contentType: req.files.file.mimetype,
-                size: req.files.file.size,
-                img: Buffer(encImg, 'base64')
-            };
-            courseCollection.insertOne({ name, designation, image })
-                .then(result => {
-                    fs.remove(filePath, error => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        }
-                        res.send(result.insertedCount > 0)
-                    })
-                })
-        })
-        console.log(name, designation, file)
+        const newImg = req.files.file.data;
+        const encImg = newImg.toString('base64');
+
+        var image = {
+            contentType: req.files.file.mimetype,
+            size: req.files.file.size,
+            img: Buffer.from(encImg, 'base64')
+        };
+        courseCollection.insertOne({ name, designation, image })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
     // Display all course/sarvices to home page
@@ -112,40 +98,27 @@ client.connect(err => {
         const ProductDetails = req.body.ProductDetails;
         const price = req.body.price;
 
-        const filePath = `${__dirname}/admin/${file.name}`;
-        file.mv(filePath, err => {
-            if (err) {
-                console.log(err);
-                res.status(500).send({ msg: 'Faild to Upload IMG' });
-            }
-            const newImg = fs.readFileSync(filePath);
-            const encImg = newImg.toString('base64');
+        const newImg = req.files.file.data;
+        const encImg = newImg.toString('base64');
 
-            var image = {
-                contentType: req.files.file.mimetype,
-                size: req.files.file.size,
-                img: Buffer(encImg, 'base64')
-            };
-            ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
-                .then(result => {
-                    fs.remove(filePath, error => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        }
-                        res.send(result.insertedCount > 0)
-                    })
-                })
-        })
+        var image = {
+            contentType: req.files.file.mimetype,
+            size: req.files.file.size,
+            img: Buffer.from(encImg, 'base64')
+        };
+        ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
     // Display order per user to order page
     app.get('/registerUser', (req, res) => {
         ordersCollection.find({ email: req.query.email })
-          .toArray((err, documents) => {
-            res.send(documents)
-          })
-      })
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
+    })
 
     // Display all sarvice to admin panel
     app.get('/showAllService', (req, res) => {
@@ -160,15 +133,11 @@ client.connect(err => {
         const email = req.body.email;
         console.log(email)
         const len = email.length;
-        adminCollection.find({ email: email})
-        .toArray((err, admin) => {
-            res.send(admin.length > 0);
-        })
+        adminCollection.find({ email: email })
+            .toArray((err, admin) => {
+                res.send(admin.length > 0);
+            })
     })
-
-
-
-
 
     //Welcome Message
     app.get('/', (req, res) => {
