@@ -43,19 +43,21 @@ client.connect(err => {
         const file = req.files.file;
         const name = req.body.name;
         const designation = req.body.designation;
+        
+            const newImg = file.data;
+            const encImg = newImg.toString('base64');
 
-        const newImg = req.files.file.data;
-        const encImg = newImg.toString('base64');
-
-        var image = {
-            contentType: req.files.file.mimetype,
-            size: req.files.file.size,
-            img: Buffer.from(encImg, 'base64')
-        };
-        courseCollection.insertOne({ name, designation, image })
-            .then(result => {
-                res.send(result.insertedCount > 0)
-            })
+            var image = {
+                contentType: file.mimetype,
+                size: file.size,
+                img: Buffer.from(encImg, 'base64')
+            };
+            courseCollection.insertOne({ name, designation, image })
+                .then(result => {
+                        res.send(result.insertedCount > 0)
+                })
+        // })
+        console.log(name, designation, file)
     })
 
     // Display all course/sarvices to home page
@@ -98,18 +100,19 @@ client.connect(err => {
         const ProductDetails = req.body.ProductDetails;
         const price = req.body.price;
 
-        const newImg = req.files.file.data;
-        const encImg = newImg.toString('base64');
+            const newImg = file.data;
+            const encImg = newImg.toString('base64');
 
-        var image = {
-            contentType: req.files.file.mimetype,
-            size: req.files.file.size,
-            img: Buffer.from(encImg, 'base64')
-        };
-        ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
-            .then(result => {
-                res.send(result.insertedCount > 0)
-            })
+            var image = {
+                contentType: file.mimetype,
+                size: file.size,
+                img: Buffer.from(encImg, 'base64')
+            };
+            ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
+                .then(result => {
+                        res.send(result.insertedCount > 0) // })
+                })
+        // })
     })
 
     // Display order per user to order page
