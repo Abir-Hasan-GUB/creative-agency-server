@@ -45,7 +45,6 @@ client.connect(err => {
         // const filePath = `${__dirname}/admin/${file.name}`;
         // file.mv(filePath, err => {
             // if (err) {
-            //     console.log(err);
             //     res.status(500).send({ msg: 'Faild to Upload IMG' });
             // }
             const newImg = file.data;
@@ -60,14 +59,12 @@ client.connect(err => {
                 .then(result => {
                     // fs.remove(filePath, error => {
                         // if (error) {
-                        //     console.log(error);
                         //     res.status(500).send({ msg: 'Faild to Upload IMG' });
                         // }
                         res.send(result.insertedCount > 0)
                     // })
                 })
         // })
-        console.log(name, designation, file)
     })
 
     // Display all course/sarvices to home page
@@ -82,11 +79,9 @@ client.connect(err => {
     //Add Comments from user to DB
     app.post('/addComments', (req, res) => {
         const addComments = req.body;
-        console.log(addComments);
 
         commentsCollection.insertOne(addComments)
             .then(result => {
-                console.log("One comment added");
                 res.send(result.insertedCount > 0)
             })
     })
@@ -113,7 +108,6 @@ client.connect(err => {
         // const filePath = `${__dirname}/admin/${file.name}`;
         // file.mv(filePath, err => {
             // if (err) {
-            //     console.log(err);
             //     res.status(500).send({ msg: 'Faild to Upload IMG' });
             // }
             const newImg = file.data;
@@ -128,7 +122,6 @@ client.connect(err => {
                 .then(result => {
                     // fs.remove(filePath, error => {
                         // if (error) {
-                        //     console.log(error);
                         //     res.status(500).send({ msg: 'Faild to Upload IMG' });
                         // }
                         res.send(result.insertedCount > 0)
@@ -156,7 +149,6 @@ client.connect(err => {
     //Check admin for login to admin panel
     app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
-        console.log(email)
         adminCollection.find({ email: email})
         .toArray((err, admin) => {
             res.send(admin.length > 0);
