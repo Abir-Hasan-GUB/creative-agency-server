@@ -43,20 +43,31 @@ client.connect(err => {
         const file = req.files.file;
         const name = req.body.name;
         const designation = req.body.designation;
-        
-            const newImg = file.data;
+        const filePath = `${__dirname}/admin/${file.name}`;
+        file.mv(filePath, err => {
+            if (err) {
+                console.log(err);
+                res.status(500).send({ msg: 'Faild to Upload IMG' });
+            }
+            const newImg = fs.readFileSync(filePath);
             const encImg = newImg.toString('base64');
 
             var image = {
-                contentType: file.mimetype,
-                size: file.size,
-                img: Buffer.from(encImg, 'base64')
+                contentType: req.files.file.mimetype,
+                size: req.files.file.size,
+                img: Buffer(encImg, 'base64')
             };
             courseCollection.insertOne({ name, designation, image })
                 .then(result => {
+                    fs.remove(filePath, error => {
+                        if (error) {
+                            console.log(error);
+                            res.status(500).send({ msg: 'Faild to Upload IMG' });
+                        }
                         res.send(result.insertedCount > 0)
+                    })
                 })
-        // })
+        })
         console.log(name, designation, file)
     })
 
@@ -100,19 +111,31 @@ client.connect(err => {
         const ProductDetails = req.body.ProductDetails;
         const price = req.body.price;
 
-            const newImg = file.data;
+        const filePath = `${__dirname}/admin/${file.name}`;
+        file.mv(filePath, err => {
+            if (err) {
+                console.log(err);
+                res.status(500).send({ msg: 'Faild to Upload IMG' });
+            }
+            const newImg = fs.readFileSync(filePath);
             const encImg = newImg.toString('base64');
 
             var image = {
-                contentType: file.mimetype,
-                size: file.size,
-                img: Buffer.from(encImg, 'base64')
+                contentType: req.files.file.mimetype,
+                size: req.files.file.size,
+                img: Buffer(encImg, 'base64')
             };
             ordersCollection.insertOne({ name, email, productName, ProductDetails, price, image })
                 .then(result => {
-                        res.send(result.insertedCount > 0) // })
+                    fs.remove(filePath, error => {
+                        if (error) {
+                            console.log(error);
+                            res.status(500).send({ msg: 'Faild to Upload IMG' });
+                        }
+                        res.send(result.insertedCount > 0)
+                    })
                 })
-        // })
+        })
     })
 
     // Display order per user to order page
