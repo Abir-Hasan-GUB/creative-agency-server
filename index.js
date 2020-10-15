@@ -147,6 +147,16 @@ client.connect(err => {
             })
     })
 
+    //Check admin for login to admin panel
+    app.post('/isAdmin', (req, res) => {
+        const email = req.body.email;
+        console.log(email)
+        const len = email.length;
+        adminCollection.find({ email: email})
+        .toArray((err, admin) => {
+            res.send(admin.length > 0);
+        })
+    })
 
 
 
