@@ -40,7 +40,6 @@ client.connect(err => {
     //upload an sarvice
     app.post('/addSarvice', (req, res) => {
         const addSarvice = req.body;
-        console.log(addSarvice)
         courseCollection.insertOne(addSarvice)
             .then(result => {
                 res.send(result.insertedCount > 0)
@@ -48,7 +47,6 @@ client.connect(err => {
     })
 
     // Display all course/sarvices to home page
-
     app.get('/showCourse', (req, res) => {
         courseCollection.find({})
             .toArray((err, documents) => {
@@ -75,38 +73,12 @@ client.connect(err => {
 
 
     // Add an order by user
-
     app.post('/addOrder', (req, res) => {
-        const file = req.files.file;
-        const name = req.body.name;
-        const email = req.body.email;
-        const productName = req.body.productName;
-        const ProductDetails = req.body.ProductDetails;
-        const price = req.body.price;
-
-        // const filePath = `${__dirname}/admin/${file.name}`;
-        // file.mv(filePath, err => {
-            // if (err) {
-            //     res.status(500).send({ msg: 'Faild to Upload IMG' });
-            // }
-            const newImg = file.data;
-            const encImg = newImg.toString('base64');
-
-            var image = {
-                contentType: file.mimetype,
-                size: file.size,
-                img: Buffer.from(encImg, 'base64')
-            };
-            ordersCollection.insertOne({ name, email, productName, ProductDetails, price })
+            const addOrder = req.body;
+            ordersCollection.insertOne(addOrder)
                 .then(result => {
-                    // fs.remove(filePath, error => {
-                        // if (error) {
-                        //     res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        // }
-                        res.send(result.insertedCount > 0)
-                    // })
+                    res.send(result.insertedCount > 0)
                 })
-        // })
     })
 
     // Display order per user to order page
