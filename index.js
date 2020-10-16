@@ -39,32 +39,12 @@ client.connect(err => {
 
     //upload an sarvice
     app.post('/addSarvice', (req, res) => {
-        const file = req.files.file;
-        const name = req.body.name;
-        const designation = req.body.designation;
-        // const filePath = `${__dirname}/admin/${file.name}`;
-        // file.mv(filePath, err => {
-            // if (err) {
-            //     res.status(500).send({ msg: 'Faild to Upload IMG' });
-            // }
-            const newImg = file.data;
-            const encImg = newImg.toString('base64');
-
-            var image = {
-                contentType: file.mimetype,
-                size: file.size,
-                img: Buffer.from(encImg, 'base64')
-            };
-            courseCollection.insertOne({ name, designation })
-                .then(result => {
-                    // fs.remove(filePath, error => {
-                        // if (error) {
-                        //     res.status(500).send({ msg: 'Faild to Upload IMG' });
-                        // }
-                        res.send(result.insertedCount > 0)
-                    // })
-                })
-        // })
+        const addSarvice = req.body;
+        console.log(addSarvice)
+        courseCollection.insertOne(addSarvice)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
     // Display all course/sarvices to home page
@@ -79,7 +59,6 @@ client.connect(err => {
     //Add Comments from user to DB
     app.post('/addComments', (req, res) => {
         const addComments = req.body;
-
         commentsCollection.insertOne(addComments)
             .then(result => {
                 res.send(result.insertedCount > 0)
