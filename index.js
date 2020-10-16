@@ -40,7 +40,6 @@ client.connect(err => {
     //upload an sarvice
     app.post('/addSarvice', (req, res) => {
         const addSarvice = req.body;
-        console.log(addSarvice);
         courseCollection.insertOne(addSarvice)
             .then(result => {
                 res.send(result.insertedCount > 0)
